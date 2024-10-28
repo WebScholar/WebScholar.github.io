@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>日照分析</title>
+    <link rel="stylesheet" href="http://gis.yunlizhihui.com/gis/static/js/cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="http://gis.yunlizhihui.com/gis/static/css/demo.css">
+    <script src="http://gis.yunlizhihui.com/gis/static/js/cesium/Cesium.js"></script>
+    <script data-map src="http://gis.yunlizhihui.com/gis/static/js/5.7.0/yunli-map-vr3d.js"></script>
+</head>
+
+<body>
+    <div class="pos_rb">
+        <div class="interaction-panel">
+            <div class="row">
+                <span>日期选择：</span><br />
+                <input oninput="changeClock()" id="date_picker" type="date">
+            </div>
+            <div class="row">
+                <span>时间选择：</span><br />
+                <input oninput="changeClock()" id="time_picker" title="时间" type="range" min="0" max="1440" step="1" />
+            </div>
+            <div class="row">
+                <span>当前时间：</span><i id="time_wrap"></i>
+            </div>
+            <div class="row">
+                <span>当前太阳光水平角：</span><i id="heading_wrap"></i>
+            </div>
+            <div class="row">
+                <span>当前太阳光俯仰角：</span><i id="pitch_wrap"></i>
+            </div>
+            <div class="row">
+                <button class="btn" id="play_btn" onclick="play()">播放</button>
+            </div>
+        </div>
+    </div>
+    <div class="map" id="map">
+    </div>
+    <script>
+
+        YunliMap3D.accessToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6IjkyYzZjMmEwLTE1NTYtNGM2MC05NWZjLTcxYzM2MThhZWEzNSJ9.eyJucyI6ImRlZmF1bHQifQ.GqnWZk3IlxdY_QnIjtXg4PU4VanDNVtLHtyLU7WLBzU";
+        var toolManager = null;
+        var map3d = new YunliMap3D.Map({
+            container: 'map',
+            center: [116.39, 39.9],
+            pitch: -24,
+            rotation: 8,
+            shadows: true,
+            zoom: 23,
+            layers: ['tianditu_img', 'tianditu_img_anno']
+        });
+
+        map3d.setCameraStatus({
+            "longitude": 114.49709364997776,
+            "latitude": 37.99096969602132,
+            "height": 1181.718162492064,
+            "pitch": -57.493648884543205,
+            "heading": 2.99707458677697,
+            "roll": 0.0005239399831221702
+        })
+
+        map3d.viewer.shadowMap.maximumDistance = 10000.0; //控制阴影起作用的距离，默认是5000
+        map3d.viewer.shadowMap.size = 4096;
+
+        var date_picker = document.getElementById('date_picker');
+        var time_picker = document.getElementById('time_picker');
+        var time_wrap = document.getElementById('time_wrap');
+        var heading_wrap = document.getElementById('heading_wrap');
+        var pitch_wrap = document.getElementById('pitch_wrap');
+        var play_btn = document.getElementById('play_btn');
+        var play_state = false;
+
+        var date = new Date();
+        // 设置默认日期
+        date_picker.value = date.toISOString().substring(0, 10);
+        time_wrap.innerHTML = date.toLocaleString().substring(5);
+        time_picker.value = date.getHours() * 60 + date.getMinutes();
+
+        changeClock();
+
+        // 改变时间
+        function changeClock() {
+            var hours = parseInt(time_picker.value / 60);
+            var minutes = parseInt(time_picker.value % 60);
+            var date = new Date(`${date_picker.value} ${hours}:${minutes}:00`);
+            time_wrap.innerHTML = date.toLocaleString().substring(5);
+
+            map3d.clockTime = date;
+
+            // 获取当前太阳光水平角，俯仰角
+            let { heading, pitch } = map3d.getSunAngle();
+            heading_wrap.innerHTML = heading.toFixed(2);
+            pitch_wrap.innerHTML = pitch.toFixed(2);
+        }
+
+        // 播放动画
+        function play() {
+            if (play_state) {
+                play_btn.innerHTML = '播放';
+                play_state = false;
+            } else {
+                play_btn.innerHTML = '暂停';
+                play_state = true;
+                (function run() {
+                    time_picker.value = (Number(time_picker.value) + 1) % 1440;
+                    changeClock();
+                    if (play_state) requestAnimationFrame(run);
+                })()
+            }
+        }
+
+        fetch("./zy.geojson")
+            .then(res => res.json())
+            .then(function (data) {
+                console.log(data);
+
+                var building = new YunliMap3D.Buildings({
+                    data: data,
+                    heightProperty: 'floor',
+                    multiple: 2.95,
+                    color: '#66737B',
+                    opacity: 1,
+                })
+
+                map3d.add(building);
+            });
+    </script>
+</body>
+
+</html>
