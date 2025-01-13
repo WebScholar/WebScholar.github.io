@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.fd2aa3b7.css",
-    "main.js": "./static/js/main.d6321ff7.js",
+    "main.css": "./static/css/main.f8a5e061.css",
+    "main.js": "./static/js/main.ee9b3dae.js",
     "static/js/419.c2df3f9a.chunk.js": "./static/js/419.c2df3f9a.chunk.js",
     "static/media/banner_home.jpg": "./static/media/banner_home.870d3fd99356bdd80900.jpg",
     "static/media/invest_bg.png": "./static/media/invest_bg.2cd293032e5c7110528f.png",
@@ -21,7 +21,7 @@
     "index.html": "./index.html"
   },
   "entrypoints": [
-    "static/css/main.fd2aa3b7.css",
-    "static/js/main.d6321ff7.js"
+    "static/css/main.f8a5e061.css",
+    "static/js/main.ee9b3dae.js"
   ]
 }
