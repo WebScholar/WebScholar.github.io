@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "./static/css/main.fd2aa3b7.css",
-    "main.js": "./static/js/main.1ba79e65.js",
+    "main.js": "./static/js/main.d6321ff7.js",
     "static/js/419.c2df3f9a.chunk.js": "./static/js/419.c2df3f9a.chunk.js",
     "static/media/banner_home.jpg": "./static/media/banner_home.870d3fd99356bdd80900.jpg",
     "static/media/invest_bg.png": "./static/media/invest_bg.2cd293032e5c7110528f.png",
@@ -22,6 +22,6 @@
   },
   "entrypoints": [
     "static/css/main.fd2aa3b7.css",
-    "static/js/main.1ba79e65.js"
+    "static/js/main.d6321ff7.js"
   ]
 }
